@@ -172,6 +172,8 @@ build() {
     aarch64) GALLIUM=",ethosu,etnaviv,lima,panfrost,rocket,svga,v3d,vc4" ;;
   esac
 
+  export RUSTFLAGS="-C link-arg=-fuse-ld=bfd"
+  
   local meson_options=(
     -D android-libbacktrace=disabled
     #-D b_lto=$([[ $CARCH == aarch64 ]] && echo true || echo false)
