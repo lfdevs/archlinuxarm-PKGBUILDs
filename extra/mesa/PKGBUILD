@@ -20,13 +20,13 @@ pkgname=(
   mesa
   opencl-mesa
   vulkan-freedreno
-  vulkan-mesa-device-select
+  vulkan-mesa-implicit-layers
   vulkan-mesa-layers
   mesa-docs
 )
-pkgver=25.3.0
+pkgver=26.0.0
 _pkgver=${pkgver/[a-z]/-&}
-pkgrel=1
+pkgrel=2.1
 epoch=1
 pkgdesc="Open-source OpenGL drivers"
 url="https://www.mesa3d.org/"
@@ -38,12 +38,12 @@ makedepends=(
   expat
   gcc-libs
   glibc
+  libdisplay-info
   libdrm
   libelf
   libglvnd
   libpng
   libva
-  libvdpau
   libx11
   libxcb
   libxext
@@ -135,7 +135,7 @@ declare -A _crates=(
 
 # Used to generate the above table
 _gencrates() {
-  grep crates.io subprojects/*.wrap | \
+  grep '^source_url' subprojects/*-rs.wrap | \
     sed -r 's|.*crates/([^/]+)/([0-9.]+)/download|\1 \2|' | \
     column -t -S 2 | sed 's/^/  /'
 }
@@ -169,7 +169,7 @@ prepare() {
 build() {
   case "${CARCH}" in
     armv7h)  GALLIUM=",etnaviv,lima,panfrost,tegra,v3d,vc4" ;;
-    aarch64) GALLIUM=",etnaviv,lima,panfrost,svga,v3d,vc4" ;;
+    aarch64) GALLIUM=",ethosu,etnaviv,lima,panfrost,rocket,svga,v3d,vc4" ;;
   esac
 
   local meson_options=(
@@ -179,6 +179,7 @@ build() {
     -D gallium-drivers=freedreno,zink,virgl,llvmpipe
     -D gallium-extra-hud=true
     -D gallium-mediafoundation=disabled
+    -D gallium-rusticl-enable-drivers=asahi,freedreno,radeonsi
     -D gallium-rusticl=true
     -D gles1=disabled
     -D html-docs=enabled
@@ -246,12 +247,10 @@ package_mesa() {
   conflicts=(
     'libva-mesa-driver<1:24.2.7-1'
     'mesa-libgl<17.0.1-2'
-    'mesa-vdpau<1:24.2.7-1'
   )
   replaces=(
     'libva-mesa-driver<1:24.2.7-1'
     'mesa-libgl<17.0.1-2'
-    'mesa-vdpau<1:24.2.7-1'
   )
 
   meson install -C build --destdir "$pkgdir" --no-rebuild
@@ -322,6 +321,7 @@ package_vulkan-freedreno() {
     expat
     gcc-libs
     glibc
+    libdisplay-info
     libdrm
     libx11
     libxcb
@@ -329,7 +329,7 @@ package_vulkan-freedreno() {
     spirv-tools
     systemd-libs
     vulkan-icd-loader
-    vulkan-mesa-device-select
+    vulkan-mesa-implicit-layers
     wayland
     xcb-util-keysyms
     zlib
@@ -343,14 +343,16 @@ package_vulkan-freedreno() {
   install -Dm644 mesa/docs/license.rst -t "$pkgdir/usr/share/licenses/$pkgname"
 }
 
-package_vulkan-mesa-device-select() {
-  pkgdesc="Mesa's Vulkan Device Select layer"
+package_vulkan-mesa-implicit-layers() {
+  pkgdesc="Mesa's implicit Vulkan layers"
   depends=(
     glibc
     libdrm
     libxcb
     wayland
   )
+  conflicts=(vulkan-mesa-device-select)
+  replaces=(vulkan-mesa-device-select)
 
   mv vkdevice/* "$pkgdir"
 
@@ -358,7 +360,7 @@ package_vulkan-mesa-device-select() {
 }
 
 package_vulkan-mesa-layers() {
-  pkgdesc="Mesa's Vulkan layers"
+  pkgdesc="Mesa's explicit Vulkan layers"
   depends=(
     gcc-libs
     glibc
