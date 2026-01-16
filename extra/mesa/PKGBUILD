@@ -19,7 +19,7 @@ pkgname=(
 )
 pkgver=26.0.0
 _pkgver=${pkgver/[a-z]/-&}
-pkgrel=1.1
+pkgrel=2.1
 epoch=1
 pkgdesc="Open-source OpenGL drivers"
 url="https://www.mesa3d.org/"
@@ -90,7 +90,7 @@ options=(
   !lto
 )
 source=(
-  "mesa::git+https://github.com/lfdevs/mesa-for-android-container.git#branch=adreno-main"
+  "mesa::git+https://github.com/lfdevs/mesa-for-android-container.git#branch=test/adreno-gen8"
 )
 
 # Rust crates for NVK, used as Meson subprojects
@@ -161,7 +161,7 @@ build() {
     -D gallium-drivers=freedreno,zink,virgl,llvmpipe
     -D gallium-extra-hud=true
     -D gallium-mediafoundation=disabled
-    -D gallium-rusticl-enable-drivers=all
+    -D gallium-rusticl-enable-drivers=freedreno
     -D gallium-rusticl=true
     -D gles1=disabled
     -D html-docs=enabled
