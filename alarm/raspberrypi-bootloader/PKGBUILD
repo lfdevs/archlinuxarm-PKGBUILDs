@@ -2,16 +2,16 @@
 # Maintainer: Kevin Mihelich <kevin@archlinuxarm.org>
 
 pkgname=raspberrypi-bootloader
-pkgver=20251217
+pkgver=20260110
 pkgrel=1
-_commit=f1ea7092589bc9627c23916132baa7841932b707
+_commit=24b0217f98d5e3331a249c63e5b91a8125886641
 arch=('any')
 url="https://github.com/raspberrypi/firmware"
 license=('custom')
 options=(!strip)
 source=("bootloader-$pkgver-${_commit:0:10}.tar.gz::https://github.com/raspberrypi/firmware/archive/${_commit}.tar.gz")
 
-md5sums=('26bafb9a05827df4bf39b169247888a9')
+md5sums=('3cfdb83b2d34aa807a41137c235b45e6')
 
 package() {
   pkgdesc="Bootloader files for Raspberry Pi"
