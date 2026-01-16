@@ -1,7 +1,7 @@
 pkgbase = python-debugpy
 	pkgdesc = An implementation of the Debug Adapter Protocol for Python
-	pkgver = 1.8.17
-	pkgrel = 1
+	pkgver = 1.8.19
+	pkgrel = 2
 	url = https://aka.ms/debugpy
 	arch = x86_64
 	license = MIT
@@ -14,7 +14,7 @@ pkgbase = python-debugpy
 	depends = gcc-libs
 	depends = glibc
 	depends = python
-	source = git+https://github.com/microsoft/debugpy#tag=v1.8.17
-	sha256sums = 82591ff5fa7fb55178348c2d024ffdf5fd7f11af98640602da6334bd36ff2da9
+	source = git+https://github.com/microsoft/debugpy#tag=v1.8.19
+	sha256sums = be7e6727a746db30f5e309c56a90c5e788c2f0fae8826794b9b3bb3a06970977
 
 pkgname = python-debugpy
