@@ -11,7 +11,6 @@
 pkgbase=mesa
 pkgname=(
   mesa
-  opencl-mesa
   vulkan-freedreno
   vulkan-mesa-implicit-layers
   vulkan-mesa-layers
@@ -161,8 +160,7 @@ build() {
     -D gallium-drivers=freedreno,zink,virgl,llvmpipe
     -D gallium-extra-hud=true
     -D gallium-mediafoundation=disabled
-    -D gallium-rusticl-enable-drivers=freedreno
-    -D gallium-rusticl=true
+    -D gallium-rusticl=false
     -D gles1=disabled
     -D html-docs=enabled
     -D intel-rt=disabled
@@ -242,9 +240,6 @@ package_mesa() {
 
     cd "$pkgdir"
 
-    _pick opencl $libdir/libRusticlOpenCL*
-    _pick opencl etc/OpenCL/vendors/rusticl.icd
-
     _pick vkfdreno $icddir/freedreno_icd.*.json
     _pick vkfdreno $libdir/libvulkan_freedreno.so
 
@@ -260,39 +255,6 @@ package_mesa() {
     # indirect rendering
     ln -sr $libdir/libGLX_{mesa,indirect}.so.0
   )
-
-  install -Dm644 mesa/docs/license.rst -t "$pkgdir/usr/share/licenses/$pkgname"
-}
-
-package_opencl-mesa() {
-  pkgdesc="Open-source OpenCL drivers"
-  depends=(
-    clang
-    expat
-    gcc-libs
-    glibc
-    libdrm
-    libelf
-    llvm-libs
-    spirv-llvm-translator
-    spirv-tools
-    zlib
-    zstd
-
-    libclc # For /usr/share/clc/
-  )
-  optdepends=("opencl-headers: headers necessary for OpenCL development")
-  provides=(opencl-driver)
-  replaces=(
-    "opencl-clover-mesa<=1:25.0.5-1"
-    "opencl-rusticl-mesa<=1:25.0.5-1"
-  )
-  conflicts=(
-    opencl-clover-mesa
-    opencl-rusticl-mesa
-  )
-
-  mv opencl/* "$pkgdir"
 
   install -Dm644 mesa/docs/license.rst -t "$pkgdir/usr/share/licenses/$pkgname"
 }
