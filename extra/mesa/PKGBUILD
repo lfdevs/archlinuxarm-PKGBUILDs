@@ -16,9 +16,9 @@ pkgname=(
   vulkan-mesa-layers
   mesa-docs
 )
-pkgver=26.0.0
+pkgver=26.1.0
 _pkgver=${pkgver/[a-z]/-&}
-pkgrel=2.1
+pkgrel=1
 epoch=1
 pkgdesc="Open-source OpenGL drivers"
 url="https://www.mesa3d.org/"
@@ -89,7 +89,7 @@ options=(
   !lto
 )
 source=(
-  "mesa::git+https://github.com/lfdevs/mesa-for-android-container.git#branch=test/adreno-gen8"
+  "mesa::git+https://github.com/lfdevs/mesa-for-android-container.git#tag=mesa-26.1.0-devel-20260125"
 )
 
 # Rust crates for NVK, used as Meson subprojects
