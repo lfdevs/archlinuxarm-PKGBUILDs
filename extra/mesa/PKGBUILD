@@ -18,7 +18,7 @@ pkgname=(
 )
 pkgver=26.1.0
 _pkgver=${pkgver/[a-z]/-&}
-pkgrel=2
+pkgrel=3
 epoch=1
 pkgdesc="Open-source OpenGL drivers"
 url="https://www.mesa3d.org/"
@@ -90,7 +90,7 @@ options=(
   !lto
 )
 source=(
-  "mesa::git+https://github.com/lfdevs/mesa-for-android-container.git#tag=mesa-26.1.0-devel-20260208"
+  "mesa::git+https://github.com/lfdevs/mesa-for-android-container.git#tag=mesa-26.1.0-devel-20260307"
 )
 
 # Rust crates for NVK, used as Meson subprojects
@@ -245,7 +245,7 @@ package_mesa() {
     cd "$pkgdir"
 
     _pick vkfdreno $libdir/libvulkan_freedreno.so
-    _pick vkfdreno usr/share/vulkan/icd.d/freedreno_icd.json
+    _pick vkfdreno usr/share/vulkan/icd.d/freedreno_icd.*.json
 
     _pick vkdevice $libdir/libVkLayer_MESA_device_select.so
     _pick vkdevice usr/share/vulkan/implicit_layer.d
