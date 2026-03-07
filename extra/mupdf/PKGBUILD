@@ -11,7 +11,7 @@
 
 pkgbase=mupdf
 pkgname=('libmupdf' 'mupdf' 'mupdf-gl' 'mupdf-tools' 'python-mupdf')
-pkgver=1.27.0
+pkgver=1.27.2
 pkgrel=2
 pkgdesc="Lightweight PDF and XPS viewer"
 url="https://mupdf.com"
@@ -29,7 +29,7 @@ source=("git+https://github.com/ArtifexSoftware/mupdf.git#tag=${pkgver}"
         "${pkgbase}.pc"
         "${pkgbase}-1.23.9-cpp_ldflags.patch"
         "${pkgbase}-1.23.9-install_targets.patch")
-sha256sums=('1e8fc3ee3ced726660b4ac0c7ebae1dd40fb7cfbc7b6b5dec6f5cd70640ec5d0'
+sha256sums=('7bb1b1417b1c735a3c80d6d6e6a4614d68a98ec5a2d068d274fc8bcac29c8381'
             'SKIP'
             'SKIP'
             'SKIP'
@@ -103,7 +103,7 @@ build() {
 
 package_libmupdf() {
 	pkgdesc="Library for Lightweight PDF and XPS viewer"
-	depends=('brotli' 'freetype2' 'gcc-libs' 'glibc' 'gumbo-parser' 'harfbuzz' 'jbig2dec' 'leptonica' 'libjpeg-turbo' 'openjpeg2' 'tesseract' 'zlib')
+	depends=('brotli' 'freetype2' 'glibc' 'gumbo-parser' 'harfbuzz' 'jbig2dec' 'leptonica' 'libgcc' 'libstdc++' 'libjpeg-turbo' 'openjpeg2' 'tesseract' 'zlib')
 
 	cd "${pkgbase}"
 	make prefix=/usr DESTDIR="${pkgdir}" SO_INSTALL_MODE=755 install-shared-c install-shared-c++
@@ -112,7 +112,7 @@ package_libmupdf() {
 
 package_python-mupdf() {
 	pkgdesc="Library for Lightweight PDF and XPS viewer - Python bindings"
-	depends=('gcc-libs' 'glibc' 'libmupdf' 'python')
+	depends=('glibc' 'libgcc' 'libstdc++' 'libmupdf' 'python')
 
 	cd "${pkgbase}"
 	make prefix=/usr DESTDIR="${pkgdir}" SO_INSTALL_MODE=755 install-shared-python

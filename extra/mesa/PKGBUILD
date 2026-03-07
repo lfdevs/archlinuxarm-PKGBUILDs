@@ -28,13 +28,14 @@ makedepends=(
   clang
   directx-headers
   expat
-  gcc-libs
   glibc
   libdisplay-info
   libdrm
   libelf
+  libgcc
   libglvnd
   libpng
+  libstdc++
   libva
   libx11
   libxcb
@@ -100,7 +101,7 @@ declare -A _crates=(
   errno            0.3.12
   hashbrown        0.14.1
   indexmap         2.2.6
-  libc             0.2.168
+  libc             0.2.171
   log              0.4.27
   once_cell        1.8.0
   paste            1.0.14
@@ -113,12 +114,14 @@ declare -A _crates=(
   remain           0.2.12
   roxmltree        0.20.0
   rustc-hash       2.1.1
-  rustix           1.0.7
+  rustix           1.1.2
   syn              2.0.87
   thiserror        2.0.11
   thiserror-impl   2.0.11
   ucd-trie         0.1.6
   unicode-ident    1.0.12
+  windows-link     0.2.0
+  windows-sys      0.61.1
   zerocopy         0.8.13
   zerocopy-derive  0.8.13
 )
@@ -202,11 +205,12 @@ _pick() {
 package_mesa() {
   depends=(
     expat
-    gcc-libs
     glibc
     libdrm
     libelf
+    libgcc
     libglvnd
+    libstdc++
     libx11
     libxcb
     libxext
@@ -236,12 +240,12 @@ package_mesa() {
   meson install -C build --destdir "$pkgdir" --no-rebuild
 
   (
-    local libdir=usr/lib icddir=usr/share/vulkan/icd.d
+    local libdir=usr/lib
 
     cd "$pkgdir"
 
-    _pick vkfdreno $icddir/freedreno_icd.*.json
     _pick vkfdreno $libdir/libvulkan_freedreno.so
+    _pick vkfdreno usr/share/vulkan/icd.d/freedreno_icd.json
 
     _pick vkdevice $libdir/libVkLayer_MESA_device_select.so
     _pick vkdevice usr/share/vulkan/implicit_layer.d
@@ -263,10 +267,11 @@ package_vulkan-freedreno() {
   pkgdesc="Open-source Vulkan driver for Adreno GPUs"
   depends=(
     expat
-    gcc-libs
     glibc
     libdisplay-info
     libdrm
+    libgcc
+    libstdc++
     libx11
     libxcb
     libxshmfence
@@ -306,9 +311,10 @@ package_vulkan-mesa-implicit-layers() {
 package_vulkan-mesa-layers() {
   pkgdesc="Mesa's explicit Vulkan layers"
   depends=(
-    gcc-libs
     glibc
+    libgcc
     libpng
+    libstdc++
 
     python
   )
