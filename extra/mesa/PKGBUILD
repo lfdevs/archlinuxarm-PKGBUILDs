@@ -7,6 +7,7 @@
 # ALARM: Kevin Mihelich <kevin@archlinuxarm.org>
 #  - set -D intel-rt=disabled
 #  - set -D teflon=true
+#  - patch to fix ARMv7 FTBFS with LLVM 22
 
 pkgbase=mesa
 pkgname=(
@@ -158,6 +159,7 @@ prepare() {
 build() {
   export RUSTFLAGS="-C link-arg=-fuse-ld=bfd"
   local meson_options=(
+    -D amdgpu-virtio=true
     -D android-libbacktrace=disabled
     -D b_ndebug=true
     -D gallium-drivers=freedreno,zink,virgl,llvmpipe

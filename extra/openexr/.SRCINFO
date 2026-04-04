@@ -1,21 +1,23 @@
 pkgbase = openexr
 	pkgdesc = A high dynamic-range image file format library
-	pkgver = 3.4.6
+	pkgver = 3.4.8
 	pkgrel = 1
 	url = https://www.openexr.com/
 	arch = x86_64
 	license = BSD-3-Clause
 	makedepends = cmake
 	makedepends = git
+	makedepends = pybind11
 	depends = glibc
 	depends = imath
 	depends = libdeflate
 	depends = libgcc
 	depends = libstdc++
 	depends = openjph
-	source = git+https://github.com/openexr/openexr#tag=v3.4.6
-	source = glibc-2.43.patch
-	sha256sums = 8d77473d529051fb50f4a3b53b2dc444672200a265b47c0f1472f05fdcefded5
-	sha256sums = e622ea083fa84d3f7c26c27b826178d68261a59677809b2b8f4d528de3294923
+	optdepends = python: for python bindings
+	source = git+https://github.com/openexr/openexr#tag=v3.4.8
+	source = python-install-dir.patch
+	sha256sums = 166e8f819eea8b031f2236bc3a302faa1f3d7523aff2490078c670c2a35f6d6e
+	sha256sums = ea2909df520d08aae5d40bf12db9112ae153a602885fa892818a0e806adc59da
 
 pkgname = openexr

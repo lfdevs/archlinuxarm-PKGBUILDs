@@ -20,6 +20,8 @@ path = [
     "distribution.ini",
     "mozconfig.cfg",
     "vendor-prefs.js",
+    "clang22-wasm32-wasip1.patch",
+    "missing-include.patch",
 ]
 SPDX-FileCopyrightText = "Arch Linux contributors"
 SPDX-License-Identifier = "0BSD"
