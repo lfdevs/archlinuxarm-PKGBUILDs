@@ -4,13 +4,13 @@
 #  - set ARM architecture targets
 
 pkgname=openssl
-pkgver=3.6.1
-pkgrel=1
+pkgver=3.6.2
+pkgrel=2
 pkgdesc='The Open Source toolkit for Secure Sockets Layer and Transport Layer Security'
 arch=('x86_64')
 url='https://www.openssl.org'
 license=('Apache-2.0')
-depends=('glibc')
+depends=('brotli' 'glibc' 'zlib' 'zstd')
 makedepends=('perl')
 optdepends=('ca-certificates' 'perl')
 replaces=('openssl-perl' 'openssl-doc')
@@ -18,7 +18,7 @@ provides=('libcrypto.so' 'libssl.so')
 backup=('etc/ssl/openssl.cnf')
 source=("https://github.com/${pkgname}/${pkgname}/releases/download/${pkgname}-${pkgver}/${pkgname}-${pkgver}.tar.gz"{,.asc}
         'ca-dir.patch')
-sha256sums=('b1bfedcd5b289ff22aee87c9d600f515767ebf45f77168cb6d64f231f518a82e'
+sha256sums=('aaf51a1fe064384f811daeaeb4ec4dce7340ec8bd893027eee676af31e83a04f'
             'SKIP'
             '0a32d9ca68e8d985ce0bfef6a4c20b46675e06178cc2d0bf6d91bd6865d648b7')
 validpgpkeys=('EFC0A467D613CB83C7ED6D30D894E2CE8B3D79F5'
@@ -39,11 +39,12 @@ build() {
 		optflags=''
 	elif [ "${CARCH}" == 'aarch64' ]; then
 		openssltarget='linux-aarch64'
-		optflags='no-afalgeng'
+		optflags='no-afalgeng enable-ec_nistp_64_gcc_128'
 	fi
 
 	./Configure --prefix=/usr --openssldir=/etc/ssl --libdir=lib \
-		shared enable-ktls ${optflags} "${openssltarget}"
+		shared enable-ktls enable-brotli enable-zlib enable-zstd \
+		${optflags} "${openssltarget}"
 
 	make depend
 	make
@@ -67,6 +68,8 @@ package() {
 	cd "$srcdir/$pkgname-$pkgver"
 
 	make DESTDIR="$pkgdir" MANDIR=/usr/share/man MANSUFFIX=ssl install_sw install_ssldirs install_man_docs
+
+	chmod 700 "$pkgdir/etc/ssl/private"
 
 	install -D -m644 LICENSE.txt "$pkgdir/usr/share/licenses/$pkgname/LICENSE.txt"
 }
