@@ -8,7 +8,7 @@ pkgname=(
   wpewebkit
   wpewebkit-docs
 )
-pkgver=2.50.6
+pkgver=2.52.3
 pkgrel=1
 pkgdesc="Embeddable web content engine"
 url="https://wpewebkit.org"
@@ -55,6 +55,7 @@ depends=(
   gstreamer
   harfbuzz
   harfbuzz-icu
+  hyphen
   icu
   lcms2
   libatomic
@@ -107,9 +108,9 @@ makedepends=(
 source=(
   $url/releases/wpewebkit-$pkgver.tar.xz{,.asc}
 )
-sha256sums=('8864fd3f6116370d75425f9b1efa48eb188ccf42c92ae9e8aaf2dd51f9f27def'
+sha256sums=('b51b1db1e6ee99d1771f4a358c128fde27a77984df20ee6cb59858e520662d0b'
             'SKIP')
-b2sums=('7da76c83bcb558155c2738bd55f8537442b057ae3b2d9fdbe6aa7a4c21466a46067703078b023139dfa0d73dc1332cb841b1d65bd5aa818e13415e1d683c8f46'
+b2sums=('5bdfa4646f034590971585e1eab8bf5ee13b0d6ad4075c13a52cd8c3f319cc40f6c75d2cdfbd8c2be7cde34942203654b6681a32fefa6582cd311f5d43d610eb'
         'SKIP')
 validpgpkeys=(
   # https://wpewebkit.org/release/verify/
