@@ -8,21 +8,16 @@ pkgbase=linux-armv7
 _srcname=linux-7.0
 _kernelname=${pkgbase#linux}
 _desc="ARMv7 multi-platform"
-pkgver=7.0.1
+pkgver=7.0.5
 pkgrel=1
-rcnver=v7.0.0
-rcnrel=multiv7-r1
 arch=('armv7h')
 url="http://www.kernel.org/"
 license=('GPL-2.0-only')
 makedepends=('xmlto' 'docbook-xsl' 'kmod' 'inetutils' 'bc' 'git' 'uboot-tools' 'vboot-utils'
   'dtc' 'python' 'flex')
 options=('!strip')
-_rcpatch=patch-6.19-rc1-multiv7-r1.diff
 source=("https://www.kernel.org/pub/linux/kernel/v7.x/${_srcname}.tar.xz"
         "https://www.kernel.org/pub/linux/kernel/v7.x/patch-${pkgver}.xz"
-        #"https://rcn-ee.com/deb/sid-armhf/v${rcnver}-${rcnrel}/patch-${rcnver%.0}-${rcnrel}.diff.gz"
-        "https://rcn-ee.com/deb/sid-armhf/v${rcnver}-${rcnrel}/$_rcpatch.gz"
         '0001-ARM-atags-add-support-for-Marvell-s-u-boot.patch'
         '0002-ARM-atags-fdt-retrieve-MAC-addresses-from-Marvell-bo.patch'
         '0003-fix-mvsdio-eMMC-timing.patch'
@@ -35,8 +30,7 @@ source=("https://www.kernel.org/pub/linux/kernel/v7.x/${_srcname}.tar.xz"
         'kernel_data_key.vbprivk'
         'linux.preset')
 md5sums=('1d35f79af3a784f986e4c3a154c0ecf5'
-         'd0899c1d6548b3307514d46643ae83d0'
-         '8f3cce77385d2086c05ee27efbb54d29'
+         'dd6488814bdb7b4e958f1c7cea7bb02a'
          'f531ad638bb6dd9d8e9e2e880c97ea12'
          'e3b3f3fa4ccd1f63b24fb6985c8052f3'
          '18d486cd411782522f6f703db0f72fd6'
@@ -60,10 +54,6 @@ prepare() {
   if [[ -f ../patch-${pkgver} ]]; then
     git apply --whitespace=nowarn ../patch-${pkgver}
   fi
-
-  # RCN patch
-  #git apply ../patch-${rcnver%.0}-${rcnrel}.diff
-  git apply ../"$_rcpatch"
 
   # ALARM patches
   git apply ../0001-ARM-atags-add-support-for-Marvell-s-u-boot.patch
