@@ -1,7 +1,7 @@
 pkgbase = gdal
 	pkgdesc = A translator library for raster and vector geospatial data formats
-	pkgver = 3.12.4
-	pkgrel = 2
+	pkgver = 3.13.1
+	pkgrel = 1
 	url = https://gdal.org/
 	changelog = gdal.changelog
 	arch = x86_64
@@ -53,8 +53,8 @@ pkgbase = gdal
 	makedepends = zstd
 	makedepends = libaec
 	makedepends = muparser
-	source = https://download.osgeo.org/gdal/3.12.4/gdal-3.12.4.tar.xz
-	b2sums = a09e0dd2b5da00286e8e2e2b1ccebf3577bfb18fb25ac04b452858e0ccb2dedfbc26c6c741d0c11bd255026d614872920750cf1ab838f8b21acfdcdf71691819
+	source = https://download.osgeo.org/gdal/3.13.1/gdal-3.13.1.tar.xz
+	b2sums = 582bea82ed21059c8b3348f91806842f0ee5337e056c8270b48a2478176036e1e34de6d9f5ebaa2ce16c7569fa36663c1bad26861161ab0e78712313fe61b407
 
 pkgname = gdal
 	depends = blosc
@@ -106,7 +106,7 @@ pkgname = gdal
 
 pkgname = python-gdal
 	pkgdesc = Python bindings for GDAL
-	depends = gdal=3.12.4
+	depends = gdal=3.13.1
 	depends = glibc
 	depends = libgcc
 	depends = libstdc++
