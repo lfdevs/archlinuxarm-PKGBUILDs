@@ -76,7 +76,6 @@ makedepends=(
   xorgproto
 
   # mesa-only deps
-  libsysprof-capture
   valgrind
 
   # html-docs
@@ -95,6 +94,7 @@ source=(
 )
 
 # Rust crates for NVK, used as Meson subprojects
+# shellcheck disable=SC2190
 declare -A _crates=(
   bitflags         2.9.1
   cfg-if           1.0.0
@@ -169,6 +169,7 @@ build() {
     -D gles1=disabled
     -D html-docs=enabled
     -D intel-rt=disabled
+    -D intel-virtio-experimental=true
     -D libunwind=disabled
     -D microsoft-clc=disabled
     -D sysprof=false
