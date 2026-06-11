@@ -45,7 +45,6 @@ makedepends=(
   llvm
   llvm-libs
   lm_sensors
-  rust
   spirv-llvm-translator
   spirv-tools
   systemd-libs
@@ -56,7 +55,6 @@ makedepends=(
   zstd
 
   # shared between mesa and lib32-mesa
-  cbindgen
   clang
   cmake
   elfutils
@@ -68,7 +66,6 @@ makedepends=(
   python-ply
   python-pycparser
   python-yaml
-  rust-bindgen
   wayland-protocols
   xorgproto
 
@@ -90,59 +87,9 @@ source=(
   "mesa::git+https://github.com/lfdevs/mesa-for-android-container.git#tag=turnip-26.2.0-devel-20260610"
 )
 
-# Rust crates for NVK, used as Meson subprojects
-# shellcheck disable=SC2190
-declare -A _crates=(
-  bitflags         2.9.1
-  cfg-if           1.0.0
-  equivalent       1.0.1
-  errno            0.3.12
-  hashbrown        0.14.1
-  indexmap         2.2.6
-  libc             0.2.171
-  log              0.4.27
-  once_cell        1.8.0
-  paste            1.0.14
-  pest             2.8.0
-  pest_derive      2.8.0
-  pest_generator   2.8.0
-  pest_meta        2.8.0
-  proc-macro2      1.0.86
-  quote            1.0.35
-  remain           0.2.12
-  roxmltree        0.20.0
-  rustc-hash       2.1.1
-  rustix           1.1.2
-  syn              2.0.87
-  thiserror        2.0.11
-  thiserror-impl   2.0.11
-  ucd-trie         0.1.6
-  unicode-ident    1.0.12
-  windows-link     0.2.0
-  windows-sys      0.61.1
-  zerocopy         0.8.13
-  zerocopy-derive  0.8.13
-)
-
-# Used to generate the above table
-_gencrates() {
-  grep '^source_url' subprojects/*-rs.wrap | \
-    sed -r 's|.*crates/([^/]+)/([0-9.]+)/download|\1 \2|' | \
-    column -t -S 2 | sed 's/^/  /'
-}
-
 b2sums=('SKIP')
 
 sha256sums=('SKIP')
-
-for _crate in "${!_crates[@]}"; do
-  _ver="${_crates[$_crate]}"
-  source+=(
-    "$_crate-$_ver.tar.gz::https://rsproxy.cn/api/v1/crates/$_crate/$_ver/download"
-  )
-  b2sums+=('SKIP')
-  sha256sums+=('SKIP')
-done
 
 prepare() {
   cd mesa
@@ -154,7 +101,6 @@ prepare() {
 }
 
 build() {
-  export RUSTFLAGS="-C link-arg=-fuse-ld=bfd"
   local meson_options=(
     -D amdgpu-virtio=true
     -D android-libbacktrace=disabled
@@ -187,9 +133,6 @@ build() {
   # Build only minimal debug info to reduce size
   CFLAGS+=" -g1"
   CXXFLAGS+=" -g1"
-
-  # Inject subproject packages
-  export MESON_PACKAGE_CACHE_DIR="$srcdir"
 
   arch-meson mesa build "${meson_options[@]}"
   meson compile -C build
