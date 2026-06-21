@@ -1,6 +1,6 @@
 pkgbase = jupyterlab
 	pkgdesc = JupyterLab computational environment
-	pkgver = 4.5.8
+	pkgver = 4.6.0
 	pkgrel = 1
 	url = https://github.com/jupyterlab/jupyterlab
 	arch = any
@@ -13,6 +13,7 @@ pkgbase = jupyterlab
 	makedepends = python-build
 	makedepends = python-hatch-jupyter-builder
 	makedepends = python-installer
+	makedepends = python-jupyter-builder
 	depends = jupyter-notebook-shim
 	depends = jupyter-server
 	depends = python
@@ -29,7 +30,7 @@ pkgbase = jupyterlab
 	optdepends = jupyterlab-lsp: LSP extension
 	optdepends = jupyterlab-widgets: ipywidgets support
 	optdepends = npm: to install extensions
-	source = git+https://github.com/jupyterlab/jupyterlab#tag=v4.5.8
-	sha256sums = 48fb79169855b60288f1dbada20ca4693e9cb6f4d6e5d2d350fdaae0e6ae90b5
+	source = git+https://github.com/jupyterlab/jupyterlab#tag=v4.6.0
+	sha256sums = 9ac7f286727f22281fbc168c8a470868ba09af69d5faf1a0b3bfa9d932464c6f
 
 pkgname = jupyterlab
