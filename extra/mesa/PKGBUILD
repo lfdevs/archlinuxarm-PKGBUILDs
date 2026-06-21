@@ -102,6 +102,7 @@ prepare() {
 
 build() {
   local meson_options=(
+    --optimization 2
     -D amdgpu-virtio=true
     -D android-libbacktrace=disabled
     -D gallium-drivers=
@@ -133,6 +134,9 @@ build() {
   # Build only minimal debug info to reduce size
   CFLAGS+=" -g1"
   CXXFLAGS+=" -g1"
+
+  # Inject subproject packages
+  export MESON_PACKAGE_CACHE_DIR="$srcdir"
 
   arch-meson mesa build "${meson_options[@]}"
   meson compile -C build
