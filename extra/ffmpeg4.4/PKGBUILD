@@ -5,7 +5,6 @@
 # Contributor: Paul Mattal <paul@archlinux.org>
 
 # ALARM: Kevin Mihelich <kevin@archlinuxarm.org>
-#  - use -fPIC in host cflags for v7/v8 to fix print_options.c compile
 #  - remove makedepends on ffnvcodec-headers, remove --enable-nvenc, --enable-nvdec
 #  - remove depends on aom, remove --enable-libaom
 #  - remove depends on intel-media-sdk, remove --enable-libmfx
@@ -17,8 +16,8 @@
 #  - patch to fix ARM FTBFS with binutils 2.43
 
 pkgname=ffmpeg4.4
-pkgver=4.4.6
-pkgrel=5
+pkgver=4.4.8
+pkgrel=2
 pkgdesc='Complete solution to record, convert and stream audio and video'
 arch=(x86_64)
 url=https://ffmpeg.org/
@@ -99,20 +98,14 @@ provides=(
   libswresample.so
   libswscale.so
 )
-_tag=9bcede27c26b2f7cd469ab6b5c8b9694c30cfca3
 source=(
   git+https://git.ffmpeg.org/ffmpeg.git#tag=n${pkgver}
   binutils-2.41.patch
   0001-gcc14.patch
 )
-b2sums=('d9975a7578d982a1beab69cd63b6894bc4ab0338cf15716c3775bc09ffafe469eb0213c07b0575d4ca192148d29e67d00f0c3779aea0a1c1099b5505589db67b'
+b2sums=('8330b51b7db436c8e3985f7530eaef1ad6815fb2b5537e7f3762abc69459ae858e5bbe530c12bb36939218a85344b099c0248fd230d57ede248cb10480304ee7'
         'b656a17dd3996c6871d322ba1fcf25410ed580d9600348cda087d705660601d06070492300d31c12d54b0e9914cb92bb9d997e51462c0577e1a90539bf0b76ee'
         'd13ac8ed5baf4a0a8864fdfb6f53456d2ecab978fb5f59f571328d313fc554c64d225a7ce60fa16fbbb1cff28685784a6921852f6cfad5aa87c72ffd03887ee5')
-
-pkgver() {
-  cd ffmpeg
-  git describe --tags | sed 's/^n//'
-}
 
 prepare() {
   cd ffmpeg
@@ -125,8 +118,6 @@ prepare() {
 
 build() {
   cd ffmpeg
-  [[ $CARCH == "armv7h" || $CARCH == "aarch64" ]] && CONFIG='--host-cflags="-fPIC"'
-
   CFLAGS+=" -Wno-incompatible-pointer-types" \
   ./configure \
     --prefix=/usr \
@@ -179,7 +170,7 @@ build() {
     --enable-libzimg \
     --enable-shared \
     --enable-version3 \
-    $CONFIG
+    --disable-decoder=magicyuv # pixelsmash
 
   make
   make tools/qt-faststart

@@ -8,7 +8,7 @@ pkgbase=linux-aarch64
 _srcname=linux-7.1
 _kernelname=${pkgbase#linux}
 _desc="AArch64 multi-platform"
-pkgver=7.1.1
+pkgver=7.1.3
 pkgrel=1
 arch=('aarch64')
 url="http://www.kernel.org/"
@@ -20,17 +20,21 @@ source=("https://www.kernel.org/pub/linux/kernel/v7.x/${_srcname}.tar.xz"
         '0001-arm64-dts-rockchip-disable-pwm0-on-rk3399-firefly.patch'
         '0002-pps-Compatibility-hack-should-be-X86-specific.patch'
         '0003-Revert-arm64-dts-rockchip-Move-rk3568-PCIe3-MSI-to-u.patch'
+        '0004-serial-amba-pl011-add-arm-pl011-axi-binding-for-RP1.patch'
+        '0005-arm64-dts-rpi5-add-RP1-UART0-GPIO14-15-console.patch'
         'config'
         'generate_chromebook_its.sh'
         'kernel.keyblock'
         'kernel_data_key.vbprivk'
         'linux.preset')
 md5sums=('b6b169bbd9c9c19857ad16db2ddf8def'
-         '8180c4b3da5b2c8b89aebadeea70d9a1'
+         '9b9f6cb95e0f2a538cdbbf239fd17022'
          '328ab847d1a56a5cabbb4779d931a175'
          'c4aa031077a71d86837ed1624e8ca4de'
          '86dc20adc64478c726a7a9f8fcf56337'
-         '5af72b1dc798a098240aa1cce3d742cd'
+         'a9bcf91cab44e1193240a43189a9313f'
+         '24c403d3738a418a67b8c0e7659380aa'
+         'b890f5bf7594cd1c7ab711bdbe06fbd9'
          '7c97cf141750ad810235b1ad06eb9f75'
          '61c5ff73c136ed07a7aadbf58db3d96a'
          '584777ae88bce2c5659960151b64c7d8'
@@ -52,6 +56,8 @@ prepare() {
   git apply ../0001-arm64-dts-rockchip-disable-pwm0-on-rk3399-firefly.patch
   git apply ../0002-pps-Compatibility-hack-should-be-X86-specific.patch
   git apply ../0003-Revert-arm64-dts-rockchip-Move-rk3568-PCIe3-MSI-to-u.patch
+  git apply ../0004-serial-amba-pl011-add-arm-pl011-axi-binding-for-RP1.patch
+  git apply ../0005-arm64-dts-rpi5-add-RP1-UART0-GPIO14-15-console.patch
 
   cat "${srcdir}/config" > ./.config
 }
