@@ -4,8 +4,8 @@
 
 buildarch=8
 
-_rcver=7.1
-_rcrel=7
+_rcver=7.2
+_rcrel=2
 
 pkgbase=linux-aarch64-rc
 _srcname=linux-${_rcver}-rc${_rcrel}
@@ -22,16 +22,22 @@ source=("https://git.kernel.org/torvalds/t/${_srcname}.tar.gz"
         '0001-net-smsc95xx-Allow-mac-address-to-be-set-as-a-parame.patch'
         '0002-arm64-dts-rockchip-disable-pwm0-on-rk3399-firefly.patch'
         '0003-pps-Compatibility-hack-should-be-X86-specific.patch'
+        '0004-serial-amba-pl011-add-arm-pl011-axi-binding-for-RP1.patch'
+        '0005-arm64-dts-rpi5-add-RP1-UART0-GPIO14-15-console.patch'
+        '20260619_dan_arm64_dts_broadcom_bcm2712_remove_non_functional_el2_virtual_timer.patch'
         'config'
         'generate_chromebook_its.sh'
         'kernel.keyblock'
         'kernel_data_key.vbprivk'
         'linux.preset')
-md5sums=('02e3760c210f9c147fc4a54552b44826'
+md5sums=('accc8f2712a5dbb7f3af64a920b94ff6'
          '14112d29b9611b73ab016bf2fc9f886d'
          '0c66f44d524a153e3942336e3c111f37'
-         'd144798da9e18e2fb82f82bbe0005064'
-         '9b34ec8e204721b8fe0dc93a8f78a488'
+         '12a1168c86d93d1096069f1cbaece6c2'
+         'a9bcf91cab44e1193240a43189a9313f'
+         '24c403d3738a418a67b8c0e7659380aa'
+         'c61ae18825583d4c95d548d90ab4f0b3'
+         'f27ede92d2b748d44fb892fc7d346c39'
          '7c97cf141750ad810235b1ad06eb9f75'
          '61c5ff73c136ed07a7aadbf58db3d96a'
          '584777ae88bce2c5659960151b64c7d8'
@@ -48,12 +54,17 @@ prepare() {
   git apply ../0001-net-smsc95xx-Allow-mac-address-to-be-set-as-a-parame.patch
   git apply ../0002-arm64-dts-rockchip-disable-pwm0-on-rk3399-firefly.patch
   git apply ../0003-pps-Compatibility-hack-should-be-X86-specific.patch
+  git apply ../0004-serial-amba-pl011-add-arm-pl011-axi-binding-for-RP1.patch
+  git apply ../0005-arm64-dts-rpi5-add-RP1-UART0-GPIO14-15-console.patch
+
+  # https://lore.kernel.org/all/878q898ulx.wl-maz@kernel.org/
+  git apply ../20260619_dan_arm64_dts_broadcom_bcm2712_remove_non_functional_el2_virtual_timer.patch
 
   cat "${srcdir}/config" > ./.config
   
   # base has iproute2 which pulls in iptables so this is needed
   # until the swtich to iptables-nft
-  # see: https://archlinuxarm.org/forum/posting.php?mode=reply&f=15&t=17296
+  # see: https://archlinuxarm.org/forum/viewtopic.php?f=15&t=17296
   scripts/config --enable CONFIG_NETFILTER_XTABLES_LEGACY
   scripts/config --module CONFIG_IP_NF_IPTABLES_LEGACY
   scripts/config --module CONFIG_IP_NF_FILTER
@@ -100,8 +111,12 @@ build() {
 _package() {
   pkgdesc="The Linux Kernel and modules - ${_desc}"
   depends=('coreutils' 'kmod' 'mkinitcpio>=0.7')
-  optdepends=('linux-firmware: firmware images needed for some devices'
-              'wireless-regdb: to set the correct wireless channels of your country')
+  optdepends=(
+    'firmware-raspberrypi: WiFi and Bluetooth firmware for Raspberry Pi'
+    'linux-firmware: firmware images needed for some devices'
+    'raspberry-pi5-armstub: NEEDED to boot RPi5 with linux-aarch64 mainline kernel'
+    'wireless-regdb: to set the correct wireless channels of your country'
+  )
   provides=("linux=${pkgver}" "WIREGUARD-MODULE")
   replaces=('linux-armv8-rc')
   conflicts=('linux')

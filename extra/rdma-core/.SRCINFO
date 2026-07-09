@@ -1,7 +1,7 @@
 pkgbase = rdma-core
 	pkgdesc = RDMA core userspace libraries and daemons
-	pkgver = 63.0
-	pkgrel = 2
+	pkgver = 64.0
+	pkgrel = 1
 	url = https://github.com/linux-rdma/rdma-core
 	arch = x86_64
 	license = GPL-2.0-or-later OR LicenseRef-OpenIB.org-BSD-MIT
@@ -81,7 +81,7 @@ pkgbase = rdma-core
 	replaces = srptools
 	backup = etc/rdma/rdma.conf
 	backup = etc/rdma/mlx4.conf
-	source = https://github.com/linux-rdma/rdma-core/archive/v63.0/rdma-core-63.0.tar.gz
-	sha512sums = 087bd1829a5ce551bf4c7f2dc48f384f3f5df5e1ee687f2f3b41d4e94e7abaa1817e0ad38080921928207c9fcb379e540488e91b7b10a8f6afa9f0a46d4aa23f
+	source = https://github.com/linux-rdma/rdma-core/archive/v64.0/rdma-core-64.0.tar.gz
+	sha512sums = 8956612b51940ff20c6586cfb0f19134704b9a4e3349623942f273cad78328dec4873ed47c5628e5a5a8bcdbc3d8aafcd64ba018716a90bc4871e84c0c08f09c
 
 pkgname = rdma-core
