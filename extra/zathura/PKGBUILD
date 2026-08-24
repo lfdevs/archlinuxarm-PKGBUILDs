@@ -8,7 +8,7 @@
 #  - moved xorg-server-xvfb and weston from checkdepends to makedepends
 
 pkgname=zathura
-pkgver=2026.07.02
+pkgver=2026.07.18
 pkgrel=1
 pkgdesc="Minimalistic document viewer"
 url="https://pwmt.org/projects/zathura/"
@@ -22,21 +22,21 @@ optdepends=('zathura-djvu: DjVu support'
             'zathura-ps: PostScript support'
             'zathura-cb: Comic book support')
 source=("${pkgname}-${pkgver}.tar.gz::https://github.com/pwmt/${pkgname}/archive/refs/tags/${pkgver}.tar.gz")
-sha512sums=('a03a7c2738f43a3d87c326515a9372a4e90560cac1824e89a57560130383fa831ed1aeb7269448e7047e21cb9e79f31729c87417f4ba911d55827b41f54e74d0')
+sha512sums=('1d0900e67e43e4bcd6dfcb05918969ff30b0a0c7e0cd214ff09499359e5e61a20440d7b9723192683a540bb9d34a9239a05075558baf26b1a14ccffa383d0200')
 
 build() {
-        cd "${pkgname}-${pkgver}"
-        arch-meson build
-        ninja -C build
+	cd "${pkgname}-${pkgver}"
+	arch-meson build
+	ninja -C build
 }
 
 check() {
-        cd "${pkgname}-${pkgver}"
-        ninja -C build test
+	cd "${pkgname}-${pkgver}"
+	ninja -C build test
 }
 
 package() {
-        cd "${pkgname}-${pkgver}"
-        DESTDIR="${pkgdir}" ninja -C build install
-        install -Dm 664 LICENSE "${pkgdir}/usr/share/licenses/${pkgname}/LICENSE"
+	cd "${pkgname}-${pkgver}"
+	DESTDIR="${pkgdir}" ninja -C build install
+	install -Dm 664 LICENSE "${pkgdir}/usr/share/licenses/${pkgname}/LICENSE"
 }

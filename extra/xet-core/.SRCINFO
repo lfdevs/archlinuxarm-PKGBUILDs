@@ -1,6 +1,6 @@
 pkgbase = xet-core
 	pkgdesc = xet client tech, used in Huggingface Hub
-	pkgver = 1.5.1
+	pkgver = 1.6.0
 	pkgrel = 1
 	url = https://github.com/huggingface/xet-core
 	arch = x86_64
@@ -9,8 +9,8 @@ pkgbase = xet-core
 	makedepends = maturin
 	makedepends = python-installer
 	makedepends = openssl
-	source = xet-core-1.5.1.tar.gz::https://github.com/huggingface/xet-core/archive/refs/tags/v1.5.1.tar.gz
-	b2sums = 271d651ea38db9da5b783759e6d3d920ea227c930705a2342399600db94b9d28139c4d4fb2d2267e61830bc1b412b6e35f7beb04d7afbed411f652af2814794d
+	source = xet-core-1.6.0.tar.gz::https://github.com/huggingface/xet-core/archive/refs/tags/v1.6.0.tar.gz
+	b2sums = 1443c48393b673a740f4d05b706bcbb7964980a65bdf7032357a91921bfab9797d65cf4e2932ec2beb0c5c15d85d0c1b700f0dd6dde0c156b1c9244bca07a525
 
 pkgname = python-hf-xet
 	depends = glibc

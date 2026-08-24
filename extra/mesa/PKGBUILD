@@ -7,7 +7,6 @@
 # ALARM: Kevin Mihelich <kevin@archlinuxarm.org>
 #  - set -D intel-rt=disabled
 #  - set -D teflon=true
-#  - patch to fix ARMv7 FTBFS with LLVM 22
 
 pkgbase=mesa
 pkgname=(
