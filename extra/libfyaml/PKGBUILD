@@ -1,0 +1,40 @@
+# Maintainer: Antonio Rojas <arojas@archlinux.org>
+
+# ALARM: Kevin Mihelich <kevin@archlinuxarm.org>
+#  - cherry-pick two upstream commits to fix 32-bit FTBFS
+#    these will be included in v1.0.0
+
+pkgname=libfyaml
+pkgver=0.9.6
+pkgrel=3
+pkgdesc='Fully feature complete YAML parser and emitter'
+arch=(x86_64)
+url='https://pantoniou.github.io/libfyaml/'
+license=(MIT)
+depends=(glibc)
+makedepends=(cmake
+             git
+             libyaml)
+source=(git+https://github.com/pantoniou/libfyaml#tag=v$pkgver)
+sha256sums=('6e3066fc231e83fe7899c3ccd8ed8931cb46461ffb25e73fcab89a35affaeccd')
+
+prepare() {
+  # https://github.com/pantoniou/libfyaml/pull/267
+  git -C $pkgname cherry-pick -n 1026d76850909dc9b1c5f95b8cd94e865a313fd5
+  # fix 32-bit FTBFS
+  git -C $pkgname cherry-pick -n 0982fcefc6a16d4c8cb5b06747d3fc8e630de3ae
+  git -C $pkgname cherry-pick -n 9192deaac095f9881cc1e5756dede683f36b09d6
+}
+
+build() {
+  cmake -B build -S $pkgname \
+    -DCMAKE_INSTALL_PREFIX=/usr \
+    -DCMAKE_BUILD_TYPE=None \
+    -DBUILD_TESTING=OFF
+  cmake --build build
+}
+
+package() {
+  DESTDIR="$pkgdir" cmake --install build
+  install -Dm644 $pkgname/LICENSE -t "$pkgdir"/usr/share/licenses/$pkgname
+}

@@ -4,8 +4,6 @@
 # ALARM: Kevin Mihelich <kevin@archlinuxarm.org>
 #  - removed makedepend and gst-plugins-bad depend on svt-hevc
 #  - removed makedepend and gst-plugins-bad depend on svt-av1, meson with -D gst-plugins-bad:svtav1=disabled
-#  - removed libgstsvthevcenc.so from gst-plugins-bad install list
-#  - meson with -D gst-plugins-bad:svthevcenc=disabled
 #  - removed gst-plug-msdk package, meson with -D gst-plugins-bad:msdk=disabled
 #  - removed gst-plug-qsv package, meson with -D gst-plugins-bad:qsv=disabled
 #  - removed gst-plugin-onnx package, meson with -D gst-plugins-bad:onnx=disabled
@@ -30,6 +28,7 @@ pkgname=(
   gst-plugin-opencv
   gst-plugin-qml6
   gst-plugin-qmlgl
+  gst-plugin-svthevcenc
   gst-plugin-va
   gst-plugin-wpe
   gst-plugin-wpe2
@@ -40,8 +39,8 @@ pkgname=(
   gst-python
   gstreamer-docs
 )
-pkgver=1.28.5
-pkgrel=1
+pkgver=1.28.6
+pkgrel=2
 pkgdesc="Multimedia graph framework"
 url="https://gstreamer.freedesktop.org/"
 arch=(x86_64)
@@ -214,18 +213,27 @@ makedepends=(
   zvbi
   zxing-cpp
 )
+makedepends_x86_64=(svt-hevc)
 checkdepends=(xorg-server-xvfb)
 source=(
   "git+https://gitlab.freedesktop.org/gstreamer/gstreamer.git?signed#tag=$pkgver"
   "https://gstreamer.freedesktop.org/src/gstreamer-docs/gstreamer-docs-$pkgver.tar.xz"{,.asc}
+
+  # Disable broken tests
   0001-HACK-meson-Disable-broken-tests.patch
-  0002-opencv-5.patch
+
+  # https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/12338
+  0002-opencv-Support-OpenCV-5.patch
+
+  # https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/12148
+  0003-faac-support-faac-2.0-faac_-API.patch
 )
-b2sums=('af4c921e40f58cd61d62dfc1420dfd4d9c0b678f8c17f9504b5f3b6fdbdbd81139a9e5c4397453795ab9fd57f6212f3eee672fc27ad37a4c2f241560dec5c1cd'
-        'de55d44ba22842aed6c72e293d9835fe78b7c123eaf2cd636328c8e4647a07994dcafc6d58f9bd20c1eba88951c6886d82af94b672d501d59b992e9580787350'
+b2sums=('53156b39ad4704688b8300ccfbf05b5c43f3f3657010e17991599e270986750be340365b54218283c8655f2e9c8de372725742316bdc6d21787dd9699f31191b'
+        '465c4de8013c5a1183c775aae36e42d8ffe1af0b162c9fb6ea5ebf8bdcc66ee1792d8cda7dee73bfe7dbd084b702bbbcde0a018f2c04fc7a62b903b487a66285'
         'SKIP'
-        '9183804b3a66ad17b3c8c10b4e219f861c83ee6e4363b1aa9d73e80dc486a30d5301c736e4f32638ced16e18f1e9174856267c6e86c91d88123cda15abb3e365'
-        'd197ca43fd75ce3b3533b17ae1d465c7e8b5e7db8e2c97ef557a696e2817a2cf92d15361bb63d474618f375741729b773c9f1be28dad9298608b4413fc9162b3')
+        '51d3271a14edd3b6edaf98256cdcc51972ba7c275c303ed42047b2ce5ea3930f742bf9a296ac2a9580b1817ce0ef68c51969617f770ef139d53949c141d7ed20'
+        '77ac82be44c4607ea09cf649a9794c27276d41ff413f61bd1a64e1ff2f5807ff08933aed501702ff07734c315719b137a8c34b7f310c1794647f8575818e3cee'
+        '4e425222d8fd1fc3c49750ad4920433e3b298698e96e714fb9d6f887ac62509f2b187a131fa31da53dcedd2a150ca59d3bd7d7519b7df91a0cff90c65094edbc')
 validpgpkeys=(
   D637032E45B8C6585B9456565D2EEE6F6F349D7C # Tim Müller <tim@gstreamer-foundation.org>
 )
@@ -233,11 +241,15 @@ validpgpkeys=(
 prepare() {
   cd gstreamer
 
-  # Disable broken tests
-  git apply -3 ../0001-HACK-meson-Disable-broken-tests.patch
-
-  # Support OpenCV 5
-  patch -p1 -i ../0002-opencv-5.patch
+  local src
+  for src in "${source[@]}"; do
+    src="${src%%::*}"
+    src="${src##*/}"
+    src="${src%.zst}"
+    [[ $src = *.patch ]] || continue
+    echo "Applying patch $src..."
+    git apply -3 < "../$src"
+  done
 }
 
 build() {
@@ -264,7 +276,6 @@ build() {
     -D gst-plugins-bad:magicleap=disabled
     -D gst-plugins-bad:msdk=disabled
     -D gst-plugins-bad:svtav1=disabled
-    -D gst-plugins-bad:svthevcenc=disabled
     -D gst-plugins-bad:mfx_api=auto
     -D gst-plugins-bad:mpeghdec=disabled
     -D gst-plugins-bad:nvcodec=disabled
@@ -293,6 +304,10 @@ build() {
     -D package-name="Arch Linux GStreamer ${epoch:+$epoch:}$pkgver-$pkgrel"
     -D package-origin="https://www.archlinux.org/"
   )
+
+  if [[ ${CARCH} != x86_64* ]]; then
+    meson_options+=(-D gst-plugins-bad:svthevcenc=disabled)
+  fi
 
   # https://gitlab.freedesktop.org/gstreamer/gstreamer/-/issues/3197
   export GI_SCANNER_DISABLE_CACHE=1
@@ -811,6 +826,7 @@ package_gst-plugins-bad() {
     'gst-plugin-va: va plugin'
     'gst-plugin-wpe: wpe plugin'
   )
+  optdepends_x86_64=('gst-plugin-svthevcenc: svthevcenc plugin')
 
   cd root; local files=(
     usr/lib/gstreamer-1.0/libgstaes.so
@@ -1031,6 +1047,23 @@ package_gst-plugin-qmlgl() {
 
   cd root; local files=(
     usr/lib/gstreamer-1.0/libgstqmlgl.so
+  ); _install
+}
+
+package_gst-plugin-svthevcenc() {
+  pkgdesc+=" - svthevcenc plugin"
+  arch=(x86_64)
+  depends=(
+    "gst-plugins-bad-libs=$pkgver-$pkgrel"
+    "gst-plugins-base-libs=$pkgver-$pkgrel"
+    "gstreamer=$pkgver-$pkgrel"
+    glib2
+    glibc
+    svt-hevc
+  )
+
+  cd root; local files=(
+    usr/lib/gstreamer-1.0/libgstsvthevcenc.so
   ); _install
 }
 
