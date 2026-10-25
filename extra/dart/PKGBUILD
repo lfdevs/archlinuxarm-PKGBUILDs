@@ -11,7 +11,7 @@
 #  - added source and sha512 for ARMv7h, AArch64 builds of Dart
 
 pkgname=dart
-pkgver=3.13.0
+pkgver=3.13.7
 pkgrel=1
 pkgdesc='The dart programming language SDK'
 arch=('x86_64' 'armv7h' 'aarch64')
@@ -23,9 +23,9 @@ options=('!strip')
 source_x86_64+=("$pkgname-$pkgver-64.zip::https://storage.googleapis.com/dart-archive/channels/stable/release/$pkgver/sdk/dartsdk-linux-x64-release.zip")
 source_armv7h+=("$pkgname-$pkgver-arm.zip::https://storage.googleapis.com/dart-archive/channels/stable/release/$pkgver/sdk/dartsdk-linux-arm-release.zip")
 source_aarch64+=("$pkgname-$pkgver-arm64.zip::https://storage.googleapis.com/dart-archive/channels/stable/release/$pkgver/sdk/dartsdk-linux-arm64-release.zip")
-sha512sums_x86_64=('1657d718913ff9d8a928a36f1220219c0957de441e958cdbdefa033ae06071f563b40191aaafcd61fd14ae59c2d95ef9ef4a2bd2e2f3f9b70c29fe19d9d4f599')
-sha512sums_armv7h=('bf7fd4aab0b708bf16e8e37bc767b92515ba30d3e8ac5ea4fd8996cd2f4efae09e6d3cdb9bc01bab526cccb6cfbf75f68f255c0c0ffc913025da94d7074557bd')
-sha512sums_aarch64=('1701750f0c7ad166bd46fdbd6e917790ca129907c0505e96049a291af8655bd44d4539027e932ea9c7c717d4a10df8ecfbc533e74dd384397807293c42d20f60')
+sha512sums_x86_64=('55b91ea48f3f7829b70f1a5689c663c27c0b6bd0d88e9ff0d91dd19ad46b4785f3a009673ea5c6a139341a7f6309b21c4e835b277973bafb2c3644d4242f17b2')
+sha512sums_armv7h=('5557803cafa1fa016bbc6ab31837e83796b1f43e53ba85cc8464ea5281b159ec5202386798dd8c38d938690428e3e9e5260abd56c1d1207ee57a3c94afe8bce9')
+sha512sums_aarch64=('5bbca59ce3f7bc22bf660327325da24148db711b3884b47276fd5911c4ed972260258c741a50dda80002fe544f52d72929f9e0a3f479f6bb1cbc0594405a7c7f')
 
 prepare() {
   # Fix permissions

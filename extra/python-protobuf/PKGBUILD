@@ -4,9 +4,9 @@
 
 pkgname=python-protobuf
 _basename=protobuf
-pkgver=35.1
+pkgver=36.1
 _ver=7
-pkgrel=2
+pkgrel=1
 pkgdesc="Protocol Buffers - Google's data interchange format"
 arch=('aarch64' 'armv7h')
 url='https://developers.google.com/protocol-buffers/'
@@ -14,7 +14,7 @@ license=('BSD-3-Clause')
 depends=('python' "protobuf=${pkgver}")
 makedepends=('python-build' 'python-installer' 'python-wheel' 'python-setuptools')
 source=("https://files.pythonhosted.org/packages/source/${_basename::1}/${_basename}/${_basename}-${_ver}.${pkgver}.tar.gz")
-sha256sums=('ce115a26fe0c39a2c29973d914d327e516a6455464489fe3cd1e51a1b354f81a')
+sha256sums=('d0f6470f0ce2b84e3feaea2d4b816378b37ba4d4aa08a274305373de93e2d524')
 
 
 build() {
