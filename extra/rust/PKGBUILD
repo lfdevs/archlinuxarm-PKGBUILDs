@@ -20,7 +20,7 @@ pkgname=(
   rust
   rust-src
 )
-pkgver=1.98.0
+pkgver=1.99.1
 pkgrel=1
 epoch=1
 pkgdesc="Systems programming language focused on safety, speed and concurrency"
@@ -47,11 +47,12 @@ depends=(
   sqlite
   zlib
 )
+_llvmver=23.1.3
 makedepends=(
-  clang
+  "clang=$_llvmver"
+  "llvm=$_llvmver"
   cmake
   libffi
-  llvm
   musl
   ninja
   perl
@@ -64,6 +65,7 @@ checkdepends=(
 )
 source=(
   "https://static.rust-lang.org/dist/rustc-$pkgver-src.tar.xz"{,.asc}
+  "https://github.com/llvm/llvm-project/releases/download/llvmorg-$_llvmver/llvm-project-$_llvmver.src.tar.xz"
 
   # Patch bootstrap so that rust-analyzer-proc-macro-srv
   # is in /usr/lib instead of /usr/libexec
@@ -85,13 +87,14 @@ source=(
   # Prefer "lib" over "lib64"
   0008-compiler-Swap-primary-and-secondary-lib-dirs.patch
 )
-b2sums=('53870091c32a2d82b99b8b792eebe08305fc2ba21da115f9fe1b503262843d5da6387ebfc45bca30db5cb403eca326c140313c28a9d78c14e662c79cd6c7bee5'
+b2sums=('b200e9114673449d5a3d227289e308f1a55450b3e887f7322324f2d9098407e03308eabc15084f90d3798f7af4a8c395da4a7973a23858af05a1f3b1de949cca'
         'SKIP'
-        '6809b37159858011394f7f8ebc8a49e0893a41a97345008a6f4b7056ea88d6bbcc72bb6173bf46df8f42fd3da6c580d541ddc372c79db42ff1bf57df58c2e1c0'
-        'aa22b8bd7efb0241f17648455b1f23d3cdfdc2f952b3527e7bc73f27387e0386126e69e8afb92c9e5c8b0041b862b0a54020874b6ac13abd013e952604d9638c'
-        '2549fcc0a39937b3e9dfdf7d2638371b666bcbf81ac4335be05b4ab43468dc7f1629ad222e17717924785a0dc3d1eed562b2f08c57e07aea7e0d6a98fe510076'
-        'b38855482a160b211f52f656d7c8bed0ca3d6d93b1845f26316fe63fdb91951dcc548b3f45abb98a649b18e141348aec345f72702ad868314acac44fa393b1d3'
-        'c215f7533beae11ce038fca383638ef84c7aa365609ae3ac65dae32894cf13a1eb96ab3e476b2c4a37fff2bdc0b14b9e01d23899ea04c4e17770d99898b5b7fd'
+        '1ce328590eb86e5a8d117a1d5c2c4b691d9c1a897f239ba197e14f47b660e927313133e94a518c43ceed163fc081760d5d33e2685a94af1031184a0960ffb5c7'
+        '3736aa3f6f891cb94dbe549d5b2c74bc56e9d484a1598c2a446fbfd4db10a90a34f2e371c65743cf01e1266470fd6fe2fc52cbc365564c62ba61e20ea11c8e22'
+        'eb57683802be1114452d0864bdabd1f2a42f83c0c45532ff968c693cb98dd5cf61342880bd75e731e91fde318b0f61cc30183374348a56db883ba32c900a4949'
+        'd39a31a9260ba1e60e34f2481a4ef19ce18178736539450e57df19b9a3364a35f23b9055eecb36175de0e01a154b04f86c2645cffc7d637aab8b38dbf2eb0832'
+        '8a5238d5807673d498ca330b8d1d7c3c14d12be1bd0dec361613b09fd04527060a7f661acd9205f6a03586e2ea4a650c890d2549eed2e207fc03cce3bdb1cf03'
+        'd36a29127349f02fdd3327a36ebfe57b1ce7f64bb24de2bb85369b377e362ee389662b5a5f281bc2a82b7fca2eee234ca6de5a923f5030e3570ab1203653fdb2'
         'd5fcda00c46e1e1ea9ed1d269d3ef549d4ad96148d7d0744acd673de802b3bf3747ceec1fa506d3e7c128cdff742410b1e69218d59ef20a5f246755c1bd02694')
 validpgpkeys=(
   108F66205EAEB0AAA8DD5E1C85AB96E6FA1BE5FE  # Rust Language (Tag and Release Signing Key) <rust-key@rust-lang.org>
@@ -113,6 +116,9 @@ prepare() {
     patch -Np1 < "../$src"
   done
 
+  rm -rf src/llvm-project
+  ln -sr "$srcdir/llvm-project-$_llvmver.src" src/llvm-project
+
   local clangdir
   clangdir="$(clang -print-resource-dir)"
 
@@ -121,7 +127,7 @@ prepare() {
 profile = "dist"
 
 # see src/bootstrap/src/utils/change_tracker.rs
-change-id = 154587
+change-id = 160100
 
 
 [llvm]
@@ -195,6 +201,7 @@ cxx = "/usr/bin/g++"
 ar = "/usr/bin/gcc-ar"
 ranlib = "/usr/bin/gcc-ranlib"
 llvm-config = "/usr/bin/llvm-config"
+optimized-compiler-builtins = "$clangdir/lib/aarch64-unknown-linux-gnu/libclang_rt.builtins.a"
 
 [target.armv7-unknown-linux-gnueabihf]
 cc = "/usr/bin/gcc"

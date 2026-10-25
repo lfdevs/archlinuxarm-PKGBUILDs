@@ -3,22 +3,24 @@
 # ALARM: Kevin Mihelich <kevin@archlinuxarm.org>
 #  - disable lto via -DCMAKE_INTERPROCEDURAL_OPTIMIZATION=OFF
 
+shopt -s extglob
+
 pkgbase=opencc
 pkgname=(opencc opencc-doc)
-pkgver=1.3.2
+pkgver=1.4.1
 pkgrel=1
 pkgdesc="Library for Open Chinese Convert"
 url="https://github.com/BYVoid/OpenCC"
 arch=('x86_64')
 license=('Apache-2.0')
-makedepends=('git' 'chrpath' 'cmake' 'cppjieba' 'darts' 'doxygen' 'marisa' 'pybind11' 'python-setuptools'
+makedepends=('git' 'chrpath' 'cmake' 'cppjieba' 'doxygen' 'marisa' 'pybind11' 'python-setuptools'
              'python-build' 'python-installer' 'python-wheel' 'rapidjson' 'tclap' 'gtest')
 source=("git+https://github.com/BYVoid/OpenCC.git#tag=ver.$pkgver")
-sha512sums=('674fd09fc4adc02fa13af8737e67a06836c9676a9c25f8c9ed57e97f832b88a71be39800fc4041ff8de207930acc6766ab50cd94286abfdecf0778109406223a')
+sha512sums=('57dd92d59c221e0dc08e0e95f13f2998478c26739538b8b7b0e509c4722129eb1eccda12b8ee12f17b96bfc079fd74f39bb6847e259cb15f8744f757c32e8bb2')
 
 prepare() {
   cd OpenCC
-  rm -r deps
+  rm -r deps/!(darts-clone-0.32h)
 
   # Package jieba plugin dictionaries from system cppjieba.
   sed -i 's|${CMAKE_CURRENT_SOURCE_DIR}/deps/cppjieba/dict/|/usr/share/cppjieba/dict/|g' plugins/jieba/CMakeLists.txt
@@ -36,8 +38,7 @@ build() {
   cmake -DCMAKE_INSTALL_PREFIX=/usr -DBUILD_DOCUMENTATION:BOOL=ON -DBUILD_PYTHON:BOOL=ON \
         -DBUILD_OPENCC_JIEBA_PLUGIN:BOOL=ON \
         -DUSE_SYSTEM_MARISA:BOOL=ON -DUSE_SYSTEM_PYBIND11:BOOL=ON -DUSE_SYSTEM_RAPIDJSON:BOOL=ON \
-        -DUSE_SYSTEM_TCLAP:BOOL=ON -DUSE_SYSTEM_DARTS:BOOL=ON -DENABLE_GTEST:BOOL=ON \
-        -DUSE_SYSTEM_GTEST:BOOL=ON -DCMAKE_INTERPROCEDURAL_OPTIMIZATION=OFF
+        -DUSE_SYSTEM_TCLAP:BOOL=ON -DENABLE_GTEST:BOOL=ON -DUSE_SYSTEM_GTEST:BOOL=ON -DCMAKE_INTERPROCEDURAL_OPTIMIZATION=OFF .
   make
 
   VERSION="$pkgver" python -m build --wheel --no-isolation
@@ -59,7 +60,7 @@ package_opencc() {
   python -m installer --destdir="$pkgdir" dist/*.whl
 
   # Hack to make opencc's python binding to use system opencc's configs
-  local python_version=$(python -c 'import sys; print(".".join(map(str, sys.version_info[:2])))')
+  local python_version=$(python -c 'import sysconfig; print(sysconfig.get_python_version())')
   mkdir "$pkgdir"/usr/lib/"python$python_version"/site-packages/opencc/clib/share
   ln -s ../../../../../../share/opencc "$pkgdir"/usr/lib/"python$python_version"/site-packages/opencc/clib/share/
 

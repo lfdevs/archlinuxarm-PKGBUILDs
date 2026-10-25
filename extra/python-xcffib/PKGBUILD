@@ -5,7 +5,7 @@
 #  - remove haskell-xcffib dependency by using the pypi release instead
 
 pkgname=python-xcffib
-pkgver=1.6.2
+pkgver=1.7.1
 pkgrel=1
 pkgdesc="xcffib is the XCB binding for python"
 arch=('any')
@@ -16,7 +16,7 @@ makedepends=('python-build' 'python-installer' 'python-wheel' 'python-setuptools
 checkdepends=('python-pytest' 'xorg-server-xvfb' 'xorg-xeyes')
 _name=${pkgname#python-}
 source=("https://files.pythonhosted.org/packages/source/${_name::1}/$_name/$_name-$pkgver.tar.gz")
-sha512sums=('c19ca9adf3649ee1497745b76c3e08f6850446f8a0ee0e4024dc3333c0edf72474e1fcb18b09ac69ade475c48780c9cb005042c8dfb0ba2d32a21a7c5efeabb4')
+sha512sums=('649ab1706aa4d5c402e91c56db41a8cdb5631e3919af4a62781e0ff940028517bb2277aa98b7e2eddbf8df825fd5b803d18d02dd029928dd1bef6c971d0b8315')
 
 prepare() {
   touch xcffib-$pkgver/test/__init__.py

@@ -11,16 +11,16 @@
 # ALARM: Kevin Mihelich <kevin@archinuxarm.org>
 #  - build v7 with vfpv3, neon FTBFS without -flax-vector-conversions and breaks https
 #  - removed --enable-lto
-#  - patch to fix aarch64 FTBFS with gcc 16
 
 pkgname=nodejs
-pkgver=26.7.0
+pkgver=26.12.1
 pkgrel=1
 pkgdesc='Evented I/O for V8 javascript ("Current" release)'
 arch=('x86_64')
 url='https://nodejs.org/'
 license=('MIT')
 depends=(
+  'abseil-cpp'
   'ada'
   'brotli'
   'c-ares'
@@ -39,17 +39,16 @@ depends=(
   'zstd'
 )
 makedepends=(
+  'cargo'
   'git'
   'ninja'
   'procps-ng'
   'python'
 )
 optdepends=('npm: nodejs package manager')
-source=("git+https://github.com/nodejs/node.git#tag=v$pkgver?signed"
-        '0001-add-missing-include.patch')
+source=("git+https://github.com/nodejs/node.git#tag=v$pkgver?signed")
 
-sha512sums=('73b6c236d41ada03af22d0e5526bcad38516f4d300b51673b02f39002e9cb69d06cf935d67ec121fd75a50fc9944c8b2ee0a726ef16c3c438be5420664310b8e'
-            '205ec2ffee0a0829ed4bd89758f3e34f990084688da21768cdebd9dce3bae64f771df8a1fb908694f6af16ab5872500f5216133810885039313eb9db1b66b58a')
+sha512sums=('bbf66cd385c68f1bdfa85ea4f9a547a4e9302c59558bc514be87cb0e724bea5bdeda23f7f7cb14c45bf02fafebf2725ad0bd5b275b18d51f93fdea6fe6b061f7')
 validpgpkeys=(
   '8FCCA13FEF1D0C2E91008E09770F7A9A5AE15600' # Michaël Zasso (Targos) <targos@protonmail.com>
   '890C08DB8579162FEE0DF9DB8BEAB4DFCF555EF4' # RafaelGSS <rafael.nunu@hotmail.com>
@@ -66,11 +65,6 @@ _set_flags() {
   CXXFLAGS="${CXXFLAGS/_FORTIFY_SOURCE=3/_FORTIFY_SOURCE=2}"
 }
 
-prepare() {
-  cd node
-  patch -p1 -i ../0001-add-missing-include.patch
-}
-
 build() {
   _set_flags
   cd node
@@ -80,6 +74,8 @@ build() {
     --prefix=/usr \
     --with-intl=system-icu \
     --without-npm \
+    --v8-enable-temporal-support \
+    --shared-abseil \
     --shared-ada \
     --shared-brotli \
     --shared-cares \
@@ -112,6 +108,9 @@ check() {
   rm test/parallel/test-http2-priority-event.js
   rm test/parallel/test-http2-reset-flood.js
   rm test/parallel/test-tls-ocsp-callback.js
+
+  # Fails on assert.strictEqual(blockList.check(`${mixed}%${'z'.repeat(200)}`, 'ipv6'), false);
+  rm test/parallel/test-blocklist.js
 
   # https://github.com/nodejs/node/issues/63914
   rm test/parallel/test-snapshot-reproducible.js

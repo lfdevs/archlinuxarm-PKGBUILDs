@@ -10,7 +10,7 @@ pkgname=(
   webkitgtk-6.0
   webkitgtk-6.0-docs
 )
-pkgver=2.52.6
+pkgver=2.54.2
 pkgrel=1
 pkgdesc="Web content engine for GTK"
 url="https://webkitgtk.org"
@@ -116,9 +116,9 @@ makedepends=(
 source=(
   $url/releases/webkitgtk-$pkgver.tar.xz{,.asc}
 )
-sha256sums=('179a2ea3f8f6edd4be7f31fdc55afc57bd0729f1fba648c61d4181539ac116fc'
+sha256sums=('a76345b391bef6211fb5ab6cfab2e86b285d18cda17cbb9ade595f1252b86065'
             'SKIP')
-b2sums=('ad984734ce9be1bfeb6de0ae1841b7326d2e5be22d6e4b20a10fa4502225a47f9ebccdcd337922962f2d21233cc5d1c4fa58a48c22ec1dd8e17f9c7c153a103f'
+b2sums=('9d159dd567544217fb59f71d337c74cbb7801335bdd292e7f1a5f72de021b28ab616158f9ffcf287b26fbdb2e9c6f6ccd434a6d92da68c5adac20ad726bae371'
         'SKIP')
 validpgpkeys=(
   # https://www.webkitgtk.org/verifying.html
@@ -171,15 +171,15 @@ build() {
 }
 
 package_webkitgtk-6.0() {
-  provides+=(
-    libjavascriptcoregtk-6.0.so
-    libwebkitgtk-6.0.so
-  )
   optdepends=(
     'geoclue: Geolocation support'
     'gst-libav: nonfree media decoding'
     'gst-plugins-bad: media decoding'
     'gst-plugins-good: media decoding'
+  )
+  provides=(
+    libjavascriptcoregtk-6.0.so
+    libwebkitgtk-6.0.so
   )
 
   DESTDIR="$pkgdir" cmake --install build

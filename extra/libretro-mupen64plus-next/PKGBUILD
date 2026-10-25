@@ -4,7 +4,7 @@
 #  - set WITH_DYNAREC for ARM
 
 pkgname=libretro-mupen64plus-next
-pkgver=20260520.104813.g98c1b0d87754
+pkgver=20261022.205042.g15bada859065
 pkgrel=1
 epoch=1
 pkgdesc='Nintendo 64 core'
@@ -30,7 +30,7 @@ makedepends=(
 )
 replaces=(libretro-mupen64plus)
 source=(libretro-mupen64plus-next::git+https://github.com/libretro/mupen64plus-libretro-nx.git#commit=${pkgver##*.g})
-b2sums=('6e00f3639738d7aa801d648e5cc4d0609cefc916784ec8ba4aa57275d3e264f1df11e42a4cf2f008612354d7b5654460ab3a3edefcd81c6436770c272f6cf568')
+b2sums=('ecad8013b433ff781a00bf7a782e8ed5481898da70a8ad9d62089358e94ed1be5b3c4a9b315461af5ab3c76802cd9bdf3fccea30a4ea6b41fdaea84c7314b644')
 options=(!lto)
 
 build() {
