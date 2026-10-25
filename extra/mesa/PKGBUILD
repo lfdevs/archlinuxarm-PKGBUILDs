@@ -16,9 +16,9 @@ pkgname=(
   vulkan-mesa-layers
   mesa-docs
 )
-pkgver=26.3.0
+pkgver=27.0.0
 _pkgver=${pkgver/[a-z]/-&}
-pkgrel=1
+pkgrel=90
 epoch=1
 pkgdesc="Open-source OpenGL drivers"
 url="https://www.mesa3d.org/"
@@ -86,7 +86,7 @@ options=(
   !lto
 )
 source=(
-  "mesa::git+https://github.com/lfdevs/mesa-for-android-container.git#tag=mesa-26.3.0-devel-20260824"
+  "mesa::git+https://github.com/lfdevs/mesa-for-android-container.git#tag=mesa-27.0.0-devel-20261025"
 )
 
 b2sums=('SKIP')
@@ -121,6 +121,9 @@ build() {
     -D sysprof=false
     -D valgrind=disabled
     -D video-codecs=all
+    -D gallium-va=enabled
+    -D termux-va-bridge=enabled
+    -D termux-va-wayland-shim=enabled
     -D vulkan-drivers=freedreno
     -D vulkan-layers=device-select,overlay,screenshot,vram-report-limit
     -D egl=enabled
@@ -174,7 +177,9 @@ package_mesa() {
   )
   optdepends=("opengl-man-pages: for the OpenGL API man pages")
   provides=(
+    "libva-mesa-driver=$epoch:$pkgver-$pkgrel"
     "mesa-libgl=$epoch:$pkgver-$pkgrel"
+    libva-driver
     opengl-driver
   )
   conflicts=(
