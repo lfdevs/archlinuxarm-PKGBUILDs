@@ -18,7 +18,7 @@ pkgname=(
 )
 pkgver=27.0.0
 _pkgver=${pkgver/[a-z]/-&}
-pkgrel=90
+pkgrel=91
 epoch=1
 pkgdesc="Open-source OpenGL drivers"
 url="https://www.mesa3d.org/"
@@ -86,7 +86,7 @@ options=(
   !lto
 )
 source=(
-  "mesa::git+https://github.com/lfdevs/mesa-for-android-container.git#tag=mesa-27.0.0-devel-20261025"
+  "mesa::git+https://github.com/lfdevs/mesa-for-android-container.git#tag=mesa-27.0.0-devel-20261025-r1"
 )
 
 b2sums=('SKIP')
