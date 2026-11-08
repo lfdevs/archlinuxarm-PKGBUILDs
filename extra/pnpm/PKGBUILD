@@ -1,0 +1,77 @@
+# Maintainer: Daniel M. Capella <polyzen@archlinux.org>
+# Contributor: Severen Redwood <me@severen.dev>
+# Contributor: Tomasz Jakub Rup <tomasz.rup@gmail.com>
+
+# Kevin Mihelich <kevin@archlinxuarm.org>
+#  - let build set march on AArch64
+
+buildarch=8
+highmem=1
+
+pkgname=pnpm
+pkgver=12.17.0
+pkgrel=1
+pkgdesc='Fast, disk space efficient package manager'
+arch=(x86_64)
+url=https://pnpm.io
+license=(MIT)
+depends=(sh glibc libgcc sqlite)
+depends_aarch64=(libatomic)
+makedepends=(cargo git mold npm)
+source=(
+  "git+https://github.com/$pkgname/$pkgname.git#tag=v$pkgver?signed"
+  pnpm.sh
+  pnpm.fish
+)
+b2sums=('77a433a4ed05d1a17aa50f5b7418079a72856779750d160a15f7624c07afb06937281067df01c272f897359a46213ff0353b72f74890a045712d021be67f64c1'
+        'f0b7eb8016921175423dc33b7bf2f47a0f79d64fa5870630ed6b423576b3ea16d5021d153f125592e36d3b179d2a6105388dcb741a0503fb7d93c50a795262e8'
+        '40bf9fbad001022f2930ae4fdd9946eb3230954a011d1e7bcf86ca7efb839c001204cd342a380c9b965a9f6800d6c1fa4fdbcd116a1d9a251ea6cd1ce7c988b3')
+validpgpkeys=(7B74D1299568B586BA9962B5649E4D4AF74E7DEC) # Zoltan Kochan <z@kochan.io>
+
+prepare() {
+  cd "$pkgname"
+
+  # Generate pnpm/crates/deps-restorer/src/cas-loader.mjs.inc.
+  catalog() { awk -v p="$1" '/^catalog:/{c=1;next} /^[^ #]/{c=0} c && $1==p":"{print $2}' pnpm-workspace.yaml; }
+  npm install --prefix "${srcdir}/deps" --ignore-scripts --no-audit --no-fund \
+    "enhanced-resolve@$(catalog enhanced-resolve)" "esbuild@$(catalog esbuild)"
+  ln -s "${srcdir}/deps/node_modules" pnpm/esm-loader/node_modules
+  node pnpm/esm-loader/scripts/bundle-runtime.mjs
+
+  cargo fetch --locked --target host-tuple
+}
+
+build() {
+  cd "$pkgname"
+
+  export LIBSQLITE3_SYS_USE_PKG_CONFIG=1
+  export RUSTFLAGS+=" -C link-args=-fuse-ld=mold"
+  if [[ $CARCH == "aarch64" ]]; then
+    export CFLAGS="${CFLAGS/-march=*([^ ]) }"
+    export CXXFLAGS="${CXXFLAGS/-march=*([^ ]) }"
+  fi
+
+  cargo build --frozen --release --all-features -p pnpm-cli --bin pnpm
+}
+
+package() {
+  cd "$pkgname"
+
+  install -Dm0755 -t "${pkgdir}/usr/bin/" "target/release/${pkgname}"
+  install -Dm0644 -t "${pkgdir}/usr/share/licenses/${pkgname}" LICENSE
+
+  install -Dm0644 <(target/release/pnpm completion bash) "${pkgdir}/usr/share/bash-completion/completions/${pkgname}"
+  install -Dm0644 <(target/release/pnpm completion fish) "${pkgdir}/usr/share/fish/vendor_completions.d/${pkgname}.fish"
+  install -Dm0644 <(target/release/pnpm completion zsh) "${pkgdir}/usr/share/zsh/site-functions/_${pkgname}"
+
+  (
+    cd "${pkgdir}/usr/bin"
+    install -Dm0755 <(echo -e '#!/bin/sh\nexec /usr/bin/pnpm dlx "$@"') pnpx
+    ln -s pnpm pn
+    ln -s pnpx pnx
+  )
+
+  install -Dm0644 "${srcdir}/pnpm.sh" "${pkgdir}/etc/profile.d/pnpm.sh"
+  install -Dm0644 "${srcdir}/pnpm.fish" \
+    "${pkgdir}/usr/share/fish/vendor_conf.d/pnpm.fish"
+}

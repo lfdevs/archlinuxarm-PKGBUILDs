@@ -17,7 +17,7 @@ highmem=1
 buildarch=8
 
 pkgname=chromium
-pkgver=156.0.8078.47
+pkgver=156.0.8078.79
 pkgrel=1
 _launcher_ver=8
 _manual_clone=0
@@ -115,10 +115,9 @@ source=(https://commondatastorage.googleapis.com/chromium-browser-official/chrom
         enable-widevine-arm64.patch
         use-oauth2-client-switches-as-default.patch
         glibc-2.42-baud-rate-fix.patch
-        add-emudhra-intermediates-to-blocklist.patch
         0001-Run-blink-bindings-generation-single-threaded.patch
         0002-Fix-distcc.patch)
-sha256sums=('2063834f528029ad02a6a3de6d229c3e8b19bc43864be397944cbda18d7ee680'
+sha256sums=('d9e8b637dbdd3a1cccb4966e81a66e3f3c4c29f5ce9732a70f5a4f949cd03923'
             '213e50f48b67feb4441078d50b0fd431df34323be15be97c55302d3fdac4483a'
             '11a96ffa21448ec4c63dd5c8d6795a1998d8e5cd5a689d91aea4d2bdd13fb06e'
             '4fc040a0656a0a524dd8ad090cd129fc5b6cb21adcc66be82080165789e8c13e'
@@ -141,7 +140,6 @@ sha256sums=('2063834f528029ad02a6a3de6d229c3e8b19bc43864be397944cbda18d7ee680'
             '5ee4bb69379ac0cea7946c9f8f4ca9e20e0a9e4ee2ee9121eb0ebbb94dd7e928'
             '9343afa1a4308a7cfb3317229f5aff7778688debcc03c4a74a85908aa1d0cc3a'
             '1c1898f263eaacbc069a8e1a3e732852350350d1dad4cb1a6bba430e3b796cd0'
-            '6297b510ac82a353bf9878af7d85d1acf5bcaf755ef0d8b8ee53459c84d1800d'
             '113aeca23adc6641249cf3c601f89c2094b11d6e857574b8aac72e08e0f2653b'
             'e853af57bd7e8e0ae91b1a6f963c21ca1a8e1e2eb8df9bf348b1fca12b5310c3')
 
@@ -214,6 +212,7 @@ prepare() {
   patch -p1 -i ../0002-Fix-distcc.patch
   export ALARM_NINJA_JOBS="16"
   export MAKEFLAGS="-j16"
+  rm buildtools/linux64/gn
 
   # https://crbug.com/893950
   sed -i -e 's/\<xmlMalloc\>/malloc/' -e 's/\<xmlFree\>/free/' \
@@ -285,8 +284,6 @@ prepare() {
   # WebUI and point devtools at the system tsc binary
   # https://github.com/ungoogled-software/ungoogled-chromium/pull/3966
   patch -Np1 -i ../chromium-156-typescript.patch
-
-  patch -Np1 -i ../add-emudhra-intermediates-to-blocklist.patch
 
   # Link to system tools required by the build
   mkdir -p third_party/node/linux/node-linux-x64/bin \
